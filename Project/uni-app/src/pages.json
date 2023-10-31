@@ -1,0 +1,39 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "浏览",
+				"navigationBarBackgroundColor": "#409EFF"
+			}
+		},
+		{
+			"path": "pages/send/index",
+			"style": {
+				"navigationBarTitleText": "发表",
+				"navigationBarBackgroundColor": "#409EFF"
+			}
+		}
+	],
+	"tabBar": {
+		"selectedColor": "#409EFF",
+		"backgroundColor": "#F8F8F8",
+		"color": "#000000",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "浏览"
+			},
+			{
+				"pagePath": "pages/send/index",
+				"text": "发表"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
