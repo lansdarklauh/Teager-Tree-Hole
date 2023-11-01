@@ -1,16 +1,23 @@
 {
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			// uni-ui 规则如下配置
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+		}
+	},
 	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "浏览",
+				"navigationBarTitleText": "Barker树洞系统",
 				"navigationBarBackgroundColor": "#409EFF"
 			}
 		},
 		{
 			"path": "pages/send/index",
 			"style": {
-				"navigationBarTitleText": "发表",
+				"navigationBarTitleText": "Barker树洞系统",
 				"navigationBarBackgroundColor": "#409EFF"
 			}
 		}
@@ -22,11 +29,15 @@
 		"list": [
 			{
 				"pagePath": "pages/index/index",
-				"text": "浏览"
+				"text": "浏览",
+				"iconPath": "static/Postcard.png",
+				"selectedIconPath": "static/Postcard_selected.png"
 			},
 			{
 				"pagePath": "pages/send/index",
-				"text": "发表"
+				"text": "发表",
+				"iconPath": "static/EditPen.png",
+				"selectedIconPath": "static/EditPen_selected.png"
 			}
 		]
 	},
