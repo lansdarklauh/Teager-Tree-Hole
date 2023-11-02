@@ -5,7 +5,7 @@
       <enterMessage></enterMessage>
       <button class="user_confirm custom_button">分享</button>
       <navigator
-        url="/pages/check/index"
+        url="/pages/login/login"
         open-type="navigate"
         hover-class="navigator-hover"
         class="manager_login_entry"

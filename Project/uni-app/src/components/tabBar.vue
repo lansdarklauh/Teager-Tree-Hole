@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import tabType from './tabType'
   export default {
     name:"tabBar",
     data() {
@@ -36,6 +37,12 @@
       };
   },
   mounted() {
+    const token = uni.getStorageSync('accessToken')
+    if (token === 'true') {
+      this.list = tabType.managerTab
+    } else {
+      this.list = tabType.userTab
+    }
     this.current = getCurrentPages()[0]
   },
     methods: {
@@ -53,20 +60,20 @@
     display: flex;
     justify-content: space-around;
     width: 100%;
-    height: 48px;
-    padding-top:8px;
-    border-top: 1px solid #cccccc;
+    height: 96rpx;
+    padding-top:16rpx;
+    border-top: 2rpx solid #cccccc;
     .tab_element{
       display: flex;
       flex-wrap: wrap;
-      width: 24px;
+      width: 48rpx;
       justify-content: center;
       .icon{
-        width:24px;
-        height: 24px;
+        width:48rpx;
+        height: 48rpx;
       }
       .text{
-        font-size: 12px;
+        font-size: 24rpx;
       }
     }
   }

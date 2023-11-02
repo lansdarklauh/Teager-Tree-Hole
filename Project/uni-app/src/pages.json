@@ -10,7 +10,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "Barker树洞系统",
+        "navigationBarTitleText": "Barker树洞系统浏览",
         "navigationBarBackgroundColor": "#409EFF"
       }
     },
@@ -25,21 +25,22 @@
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录",
-		"navigationBarBackgroundColor": "#409EFF",
+		    "navigationBarBackgroundColor": "#409EFF",
         "enablePullDownRefresh": false
       }
     },
-	{
+	  {
       "path": "pages/check/index",
       "style": {
         "navigationBarTitleText": "Barker树洞系统",
-        "navigationBarBackgroundColor": "#2bb88a",
-		"app-plus": {
-			"titleNView": {
-				"titleSize": "18px",
-				"autoBackButton": false
-			}
-		}
+        "navigationBarBackgroundColor": "#2bb88a"
+      }
+    },
+    {
+      "path": "pages/manage/index",
+      "style": {
+        "navigationBarTitleText": "Barker树洞系统",
+        "navigationBarBackgroundColor": "#2bb88a"
       }
     }
   ],
@@ -61,17 +62,23 @@
         "iconPath": "static/EditPen.png",
         "selectedIconPath": "static/EditPen_selected.png"
       },
-	  {
+	    {
         "pagePath": "pages/check/index",
         "text": "审核",
         "iconPath": "/static/DocumentChecked.png",
         "selectedIconPath": "static/DocumentChecked_selected.png"
       },
+      {
+        "pagePath": "pages/manage/index",
+        "text": "管理",
+        "iconPath": "/static/Memo.png",
+        "selectedIconPath": "static/Memo_selected.png"
+      },
     ]
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
+    "navigationBarTitleText": "Barker树洞系统",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   }

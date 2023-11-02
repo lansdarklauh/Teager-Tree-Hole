@@ -1,7 +1,8 @@
 <template>
   <view class="content">
     <view class="text-area">
-      <text class="title manager">待审核列表</text>
+      <text class="title manager" @click="exitManager">管理树洞</text>
+      <uni-datetime-picker class="timePicker" :border="false" v-model="single" />
       <ShowMessage :message="message"></ShowMessage>
       <uni-data-checkbox class="message_tags"  mode="tag" multiple v-model="message.tag" :localdata="tags"></uni-data-checkbox>
       <view class="message_type">
@@ -33,7 +34,7 @@ export default {
   },
   data() {
     return {
-      title: '审核',
+      title: '管理',
       message: {
         id: '123456',
         content: '只有在自己醒来之后才会发现自己做了一个梦',
@@ -65,11 +66,17 @@ export default {
             value: '幽默',
             disable: false
           }
-        ]
+      ],
+      datePick: '2023-10-31'
     }
   },
   methods: {
-
+    exitManager() {
+      uni.setStorageSync('accessToken', 'false')
+      uni.switchTab({
+        url:'/pages/index/index',
+      })
+    }
   },
 }
 </script>
@@ -90,9 +97,12 @@ export default {
   }
   .button_box{
     width: 100%;
-    margin-top:32rpx;
+    margin-top:16rpx;
     display: flex;
     flex-wrap: nowrap;
+  }
+  .timePicker{
+    transform: scale(0.7);
   }
 }
 .text-area {
@@ -101,10 +111,10 @@ export default {
   justify-content: center;
   width:640rpx;
   .message_type{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top:16rpx
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:16rpx
+  }
 }
 </style>

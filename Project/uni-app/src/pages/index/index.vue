@@ -42,6 +42,9 @@ export default {
       likeFlag:false
     }
   },
+  onLoad() {
+    uni.setStorageSync('accessToken', 'false')
+  },
   methods: {
     likeClick() {
       if (this.likeFlag) {
@@ -71,7 +74,7 @@ export default {
       line-height: 64rpx;
     }
     .like_flag{
-      margin: 16px 0 24px;
+      margin: 32rpx 0 48rpx;
       width: 100%;
       text-align: center;
       .hearted text{

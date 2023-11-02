@@ -10,7 +10,7 @@
 			  	<uni-easyinput type="password" v-model="formData.password" placeholder="8-16位英文与数字" :maxlength="16"/>
 			  </uni-forms-item>
 		  </uni-forms>
-      <button class="user_confirm">登录</button>
+      <button class="user_confirm" @click="login">登录</button>
     </view>
   </view>
 </template>
@@ -81,7 +81,14 @@ export default {
   onReady() {
     this.$refs.form.setRules(this.rules)
   },
-  methods: {},
+  methods: {
+    login() {
+      uni.setStorageSync('accessToken', 'true')
+      uni.switchTab({
+        url:'/pages/check/index',
+      })
+    }
+  },
 }
 </script>
 

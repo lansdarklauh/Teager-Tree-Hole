@@ -14,7 +14,7 @@ export default {
 
 <style>
 .title {
-  margin: 92rpx 0 48rpx;
+  margin: 48rpx 0 32rpx;
   color: #409EFF;
   text-align: center;
   font-size: 64rpx;
@@ -31,6 +31,12 @@ export default {
   width: 256rpx;
   background-color: #409EFF;
   color: #ffffff;
+  font-size: 28rpx;
+}
+.user_cancel{
+  width: 256rpx;
+  background-color: #ffffff;
+  color: #000000;
   font-size: 28rpx;
 }
 .uni-data-checklist .checklist-group{
