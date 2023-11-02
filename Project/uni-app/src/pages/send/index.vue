@@ -2,27 +2,30 @@
   <view class="content">
     <view class="text-area">
       <text class="title">倾听你的碎碎念</text>
-      <ShowMessage :message="message"></ShowMessage>
-      <text class="tags">{{ message.tag.join('，') }}</text>
-      <view class="like_flag" @click="likeClick">
-        <uni-icons type="heart" size="30" v-show="!likeFlag"></uni-icons>
-        <uni-icons type="heart-filled" class="hearted" size="30" v-show="likeFlag"></uni-icons><br />
-        <br />
-        <text class="like_num" v-show="likeFlag" :style="{'color':'#FF005C'}">{{ message.like }}</text>
-        <text class="like_num" v-show="!likeFlag" :style="{'color':'#000000'}">{{ message.like }}</text>
-      </view>
-      <button class="user_confirm">下一条</button>
+      <enterMessage></enterMessage>
+      <button class="user_confirm custom_button">分享</button>
+      <navigator
+        url="/pages/check/index"
+        open-type="navigate"
+        hover-class="navigator-hover"
+        class="manager_login_entry"
+      >
+        <text>或者，你是树洞的管理者？</text>
+      </navigator>
     </view>
+    <tabBar class="tab_bar"></tabBar>
   </view>
 </template>
 
 <script>
-import ShowMessage from '../../components/showMessage.vue';
+import enterMessage from '@/components/enterMessage.vue';
+import tabBar from '@/components/tabBar.vue';
 
 export default {
   components: {
-    ShowMessage
-  },
+    enterMessage,
+    tabBar
+},
   data() {
     return {
       title: '发表',
@@ -59,22 +62,14 @@ export default {
     flex-direction: column;
     justify-content: center;
     width:640rpx;
-    .tags{
-      margin-top: 32rpx;
-      color: #409EFF;
-      text-align: center;
-      font-size: 32rpx;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 64rpx;
-    }
-    .like_flag{
-      margin: 16px 0 24px;
-      width: 100%;
-      text-align: center;
-      .hearted text{
-        color:#FF005C !important;
-      }
-    }
+  }
+  .custom_button{
+    margin-top: 64rpx;
+  }
+  .manager_login_entry{
+    margin-top: 32rpx;
+    color: #409EFF;
+    text-align: center;
+    font-size: 28rpx;
   }
 </style>

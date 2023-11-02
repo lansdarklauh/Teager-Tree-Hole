@@ -33,4 +33,15 @@ export default {
   color: #ffffff;
   font-size: 28rpx;
 }
+.uni-data-checklist .checklist-group{
+  justify-content:center;
+}
+.content{
+  flex-wrap: wrap;
+}
+.tab_bar{
+    position: absolute;
+    bottom: 0;
+    width:100%
+  }
 </style>

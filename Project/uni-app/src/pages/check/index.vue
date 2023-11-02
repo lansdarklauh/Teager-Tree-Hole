@@ -1,7 +1,7 @@
 <template>
   <view class="content">
     <view class="text-area">
-      <text class="title">树洞里的碎碎念</text>
+      <text class="title">待审核列表</text>
       <ShowMessage :message="message"></ShowMessage>
       <text class="tags">{{ message.tag.join('，') }}</text>
       <view class="like_flag" @click="likeClick">
@@ -56,27 +56,35 @@ export default {
 </script>
 
 <style lang="scss">
-  .text-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width:640rpx;
-    .tags{
-      margin-top: 32rpx;
-      color: #409EFF;
-      text-align: center;
-      font-size: 32rpx;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 64rpx;
-    }
-    .like_flag{
-      margin: 16px 0 24px;
-      width: 100%;
-      text-align: center;
-      .hearted text{
-        color:#FF005C !important;
-      }
+.content{
+  flex-wrap: wrap;
+  .tab_bar{
+    position: absolute;
+    bottom: 0;
+    width:100%
+  }
+}
+.text-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width:640rpx;
+  .tags{
+    margin-top: 32rpx;
+    color: #409EFF;
+    text-align: center;
+    font-size: 32rpx;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 64rpx;
+  }
+  .like_flag{
+    margin: 16px 0 24px;
+    width: 100%;
+    text-align: center;
+    .hearted text{
+      color:#FF005C !important;
     }
   }
+}
 </style>
