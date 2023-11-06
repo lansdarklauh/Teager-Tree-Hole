@@ -27,21 +27,14 @@ async function getMessages(time, all, id) {
         await client.close();
         return Promise.resolve(result)
     } else {
-        let res = await dbo.collection("AuditList").find({}).toArray();
-        if (res.length) {
-            if (all) result = res
-            else {
-                if (id) {
-                    for (let i = 0; i < res.length; i++) {
-                        if (res[i].id === id) {
-                            result = res[i]
-                        }
-                    }
-                } else {
-                    const random = parseInt(Math.random() * (res.length) + 0, 10)
-                    result = res[random]
-                }
-            }
+        let res = []
+        if (id) {
+            res = await dbo.collection("AuditList").find({ "id": id }).toArray();
+        } else {
+            res = await dbo.collection("AuditList").find({}).toArray();
+        }
+        if (res && res.length) {
+            result = res[0]
         }
         await client.close();
         return Promise.resolve(result)
@@ -62,16 +55,26 @@ async function deleteMessages(list, time, id) {
         if (time) {
             if (list !== 'AuditList') {
                 let arg = { "time": time }
-                let res = await dbo.collection(list).find(arg).toArray()[0];
+                let res = await dbo.collection(list).find(arg).toArray();
                 if (res && res.length) {
-                    const updateStr = { $set: { "chatList": res.chatList.filter(item => item.id !== id) } }
-                    let delRes = await dbo.collection(list).updateOne(arg, updateStr);
-                    console.log("删除成功");
-                    await client.close();
-                    return Promise.resolve({
-                        res: true,
-                        msg: '删除成功'
-                    })
+                    const chatList = res[0].chatList.filter(item => item.id !== id)
+                    if (chatList.length === 0) {
+                        let delRes = await dbo.collection(list).deleteOne(arg);
+                        await client.close();
+                        return Promise.resolve({
+                            res: true,
+                            msg: '该日期已无语句，自动去除'
+                        })
+                    } else {
+                        const updateStr = { $set: { "chatList": chatList } }
+                        let delRes = await dbo.collection(list).updateOne(arg, updateStr);
+                        console.log("删除成功");
+                        await client.close();
+                        return Promise.resolve({
+                            res: true,
+                            msg: '删除成功'
+                        })
+                    }
                 } else {
                     await client.close()
                     return Promise.reject({
@@ -88,6 +91,14 @@ async function deleteMessages(list, time, id) {
                     msg: '未过审语句删除成功'
                 })
             }
+        } else if (list === 'AuditList') {
+            let arg = { "id": id }
+            let delRes = await dbo.collection(list).deleteOne(arg);
+            await client.close();
+            return Promise.resolve({
+                res: true,
+                msg: '未过审语句删除成功'
+            })
         } else {
             await client.close()
             return Promise.reject({
@@ -120,9 +131,9 @@ async function addMessages(list, message) {
         let collection = dbo.collection(list)
         if (collection) {
             if (list === 'MessagesList') {
-                let res = await dbo.collection(list).find(arg).toArray()[0];
+                let res = await dbo.collection(list).find(arg).toArray();
                 if (res && res.length) {
-                    const chatList = res.chatList.concat([message])
+                    const chatList = res[0].chatList.concat([message])
                     const updateStr = { $set: { "chatList": chatList } }
                     let addRes = await dbo.collection(list).updateOne(arg, updateStr);
                     await client.close();
@@ -167,19 +178,18 @@ async function updateMessage(message) {
     await client.connect();
     let dbo = client.db('Teager-Tree-Hole');
     let time = message.time
-    let collection = db.collection(list)
+    let collection = dbo.collection('MessagesList')
     if (collection) {
         if (time) {
             let arg = { "time": time }
-            let res = await dbo.collection('MessagesList').find(arg).toArray()[0];
-            if (err) throw err;
+            let res = await dbo.collection("MessagesList").find(arg).toArray();
             if (res && res.length) {
                 let tempList = []
-                for (let i = 0; i < res.chatList.length; i++) {
-                    if (res.chatList[i].id === message.id) {
+                for (let i = 0; i < res[0].chatList.length; i++) {
+                    if (res[0].chatList[i].id === message.id) {
                         tempList.push(message)
                     } else {
-                        tempList.push(res.chatList[i])
+                        tempList.push(res[0].chatList[i])
                     }
                 }
                 const updateStr = { $set: { "chatList": tempList } }

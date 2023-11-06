@@ -7,9 +7,9 @@ async function getManager(name) {
     await client.connect();
     let dbo = client.db("Teager-Tree-Hole");
     const res = await dbo.collection("ManagersList").find({ name: name }).toArray();
-    result = res
+    result = res[0] || ''
     await await client.close();
-    return result
+    return Promise.resolve(result)
 }
 
 module.exports = {

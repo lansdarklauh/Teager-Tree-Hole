@@ -10,19 +10,45 @@ const tokenConfig = {
 router.prefix('/message')
 
 router.get('/getMessage', async function (ctx, next) {
-    const { id } = ctx.query
-    let res = await messageOption.getTimes()
-    if (res && res.length) {
-        const times = res.map(item => item.time)
-        if (times && times.length) {
-            const index = parseInt(Math.random() * (times.length) + 0, 10)
-            const date = times[index]
-            res = await messageOption.getMessages(date, false, id)
+    const { id, audit } = ctx.query
+    if (audit) {
+        const token = ctx.get('Authorization')
+        if (token === '') {
+            ctx.body = {
+                code: 200,
+                data: false,
+                msg: '请重新登录'
+            }
+        } else {
+            try {
+                let res = await messageOption.getMessages(null, false, id)
+                ctx.body = {
+                    code: 200,
+                    data: res || null
+                }
+            } catch {
+                ctx.body = {
+                    code: 200,
+                    data: false,
+                    msg: '请重新登录'
+                }
+            }
         }
-    }
-    ctx.body = {
-        code: 200,
-        data: res
+    } else {
+        let res = await messageOption.getTimes()
+        if (res && res.length) {
+            const times = res.map(item => item.time)
+            if (times && times.length) {
+                const index = parseInt(Math.random() * (times.length) + 0, 10)
+                const date = times[index]
+                res = await messageOption.getMessages(date, false, id)
+                if (res && res.state === 2) res.author = ''
+            }
+        }
+        ctx.body = {
+            code: 200,
+            data: res || null
+        }
     }
 })
 
@@ -37,26 +63,33 @@ router.get('/getMessageList', async function (ctx, next) {
     } else {
         try {
             const userInfo = jwt.verify(token, tokenConfig.privateKey)
-            const { time } = ctx.query
-            if (time) {
-                const date = times[index]
-                res = await messageOption.getMessages(time, true)
+            const { time, audit } = ctx.query
+            if (audit) {
+                let res = await messageOption.getMessages(null, true)
                 ctx.body = {
                     code: 200,
                     data: res
                 }
             } else {
-                let res = await messageOption.getTimes()
-                if (res && res.length) {
-                    const times = res.map(item => item.time)
-                    if (times && times.length) {
-                        const date = times[times.length - 1]
-                        res = await messageOption.getMessages(date, true)
+                if (time) {
+                    let res = await messageOption.getMessages(time, true)
+                    ctx.body = {
+                        code: 200,
+                        data: res
                     }
-                }
-                ctx.body = {
-                    code: 200,
-                    data: res
+                } else {
+                    let res = await messageOption.getTimes()
+                    if (res && res.length) {
+                        const times = res.map(item => item.time)
+                        if (times && times.length) {
+                            const date = times[times.length - 1]
+                            res = await messageOption.getMessages(date, true)
+                        }
+                    }
+                    ctx.body = {
+                        code: 200,
+                        data: res
+                    }
                 }
             }
         } catch {
@@ -117,47 +150,37 @@ router.post('/updateMessage', async function (ctx, next) {
 })
 
 router.post('/updateMessageLike', async function (ctx, next) {
-    const token = ctx.get('Authorization')
-    if (token === '') {
-        ctx.body = {
-            code: 200,
-            data: false,
-            msg: '请重新登录'
-        }
-    } else {
-        try {
-            const userInfo = jwt.verify(token, tokenConfig.privateKey)
-            const { like, id, time } = ctx.request.body
-            let res = await messageOption.getMessages(time, false, id)
-            if (res) {
-                let obj = res
-                obj.like = like
-                let flag = await messageOption.updateMessage(obj)
-                if (flag.res) {
-                    ctx.body = {
-                        code: 200,
-                        data: true
-                    }
-                } else {
-                    ctx.body = {
-                        code: 200,
-                        data: false,
-                        msg: '修改失败'
-                    }
+    try {
+        const { like, id, time } = ctx.request.body
+        let res = await messageOption.getMessages(time, false, id)
+        if (res) {
+            let obj = res
+            obj.like = like
+            let flag = await messageOption.updateMessage(obj)
+            if (flag.res) {
+                ctx.body = {
+                    code: 200,
+                    data: true
                 }
             } else {
                 ctx.body = {
                     code: 200,
-                    data: null,
-                    msg: '没有找到对应的语句'
+                    data: false,
+                    msg: '修改失败'
                 }
             }
-        } catch {
+        } else {
             ctx.body = {
                 code: 200,
-                data: false,
-                msg: '请重新登录'
+                data: null,
+                msg: '没有找到对应的语句'
             }
+        }
+    } catch {
+        ctx.body = {
+            code: 200,
+            data: false,
+            msg: '请重新登录'
         }
     }
 })
@@ -174,18 +197,18 @@ router.post('/addMessage', async function (ctx, next) {
             state: 0,
             type: Number(type),
             tag: tag,
-            time: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+            time: date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
         }
         let res = await messageOption.addMessages('AuditList', obj)
         if (res.res) {
             ctx.body = {
                 code: 200,
-                date: true
+                data: true
             }
         } else {
             ctx.body = {
                 code: 200,
-                date: false,
+                data: false,
                 msg: '添加失败'
             }
         }
@@ -213,7 +236,7 @@ router.post('/passMessage', async function (ctx, next) {
             let message = await messageOption.getMessages(null, false, id)
             if (message) {
                 message.state = Number(state)
-                message.tag = JSON.parse(tag)
+                message.tag = tag
                 delete message._id
                 let addRes = await messageOption.addMessages('MessagesList', message)
                 if (addRes.res) {
@@ -262,12 +285,12 @@ router.delete('/deleteMessage', async function (ctx, next) {
             if (res.res) {
                 ctx.body = {
                     code: 200,
-                    date: true
+                    data: true
                 }
             } else {
                 ctx.body = {
                     code: 200,
-                    date: false,
+                    data: false,
                     msg: res.msg
                 }
             }

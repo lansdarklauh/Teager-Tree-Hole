@@ -3,29 +3,21 @@ import { defineStore } from 'pinia';
 export const useMessageStore = defineStore('messageStore', {
     state: () => {
         return {
-            message: {},
-            auditMsg: {},
             messageList: []
         };
     },
     actions: {
-        getMessage() {
-            return this.message;
+        getMessageList(index) {
+            return ((index || index === 0) ? this.messageList[index] : this.messageList)
         },
-        setMessage(message) {
-            this.message = message
+        setMessageList(messageList) {
+            this.messageList = messageList
         },
-        getCheckList() {
-            return this.auditMsg
+        deleteMessage(id) {
+            this.messageList = this.messageList.filter(item => item.id !== id)
         },
-        setCheckList(auditMsg) {
-            this.auditMsg = auditMsg
-        },
-        getCheckList() {
-            return this.auditMsg
-        },
-        setCheckList(auditMsg) {
-            this.auditMsg = auditMsg
+        getMessagesListLength() {
+            return this.messageList.length
         }
     },
 });

@@ -4,14 +4,14 @@
       <text class="title">树洞里的碎碎念</text>
       <ShowMessage :message="message"></ShowMessage>
       <text class="tags">{{ message.tag.join('，') }}</text>
-      <view class="like_flag" @click="likeClick">
+      <view class="like_flag" v-if="fetchFlag" @click="likeClick">
         <uni-icons type="heart" size="30" v-show="!likeFlag"></uni-icons>
         <uni-icons type="heart-filled" class="hearted" size="30" v-show="likeFlag"></uni-icons><br />
         <br />
         <text class="like_num" v-show="likeFlag" :style="{'color':'#FF005C'}">{{ message.like }}</text>
         <text class="like_num" v-show="!likeFlag" :style="{'color':'#000000'}">{{ message.like }}</text>
       </view>
-      <button class="user_confirm">下一条</button>
+      <button class="user_confirm" @click="nextMessage">下一条</button>
     </view>
     <tabBar class="tab_bar"></tabBar>
   </view>
@@ -20,6 +20,9 @@
 <script>
 import ShowMessage from '@/components/showMessage.vue';
 import tabBar from '@/components/tabBar.vue';
+import { getMessage, updateMessageLike } from '@/api/message'
+import { useManagerStore } from '@/store/index'
+const managerStore = useManagerStore()
 
 export default {
   components: {
@@ -39,20 +42,50 @@ export default {
         tag: ['文学', '人生'],
         time: '2023/10/30'
       },
-      likeFlag:false
+      likeFlag: false,
+      fetchFlag: false
     }
   },
   onLoad() {
-    uni.setStorageSync('accessToken', 'false')
+    uni.setStorageSync('accessToken', '')
+    managerStore.setToken('')
+    getMessage().then(res => {
+      if (res.data.data) {
+        this.message = res.data.data
+        this.fetchFlag = true
+      } else {
+        this.fetchFlag = false
+      }
+    })
   },
   methods: {
     likeClick() {
-      if (this.likeFlag) {
-        this.message.like--
-      } else {
-        this.message.like++
+      const obj = {
+        id: this.message.id,
+        like:this.likeFlag? this.message.like -1: this.message.like + 1,
+        time: this.message.time  
       }
-      this.likeFlag = !this.likeFlag
+      updateMessageLike(obj).then(res => {
+        if (res.data.data) {
+          if(this.likeFlag){
+            this.message.like--
+          } else {
+            this.message.like++ 
+          }
+          this.likeFlag = !this.likeFlag
+        }
+      })
+    },
+    nextMessage() {
+      this.likeFlag = false
+      getMessage().then(res => {
+        if (res.data.data) {
+          this.message = res.data.data
+          this.fetchFlag = true
+        } else {
+          this.fetchFlag = false
+        }
+      })
     }
   },
 }

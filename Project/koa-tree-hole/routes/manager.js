@@ -12,9 +12,9 @@ router.prefix('/manager')
 
 router.post('/login', async (ctx, next) => {
     const { name, password } = ctx.request.body
-    const pwd = await managerOption.getManager(name).password
-    const realPWD = CryptoJS.AES.decrypt(pwd, tokenConfig.passwordKey).toString(CryptoJS.enc.Utf8);
-    if (password === md5(realPWD)) {
+    const pwd = await managerOption.getManager(name)
+    // const realPWD = CryptoJS.AES.decrypt(pwd.password, tokenConfig.passwordKey).toString(CryptoJS.enc.Utf8);
+    if (password === md5(pwd.password)) {
         const userInfo = { name: name }
         const token = jwt.sign(userInfo, tokenConfig.privateKey, { expiresIn: '10h' })
         ctx.body = {
@@ -25,7 +25,7 @@ router.post('/login', async (ctx, next) => {
     } else {
         ctx.body = {
             code: 200,
-            data: token,
+            data: false,
             msg: '登录失败'
         }
     }

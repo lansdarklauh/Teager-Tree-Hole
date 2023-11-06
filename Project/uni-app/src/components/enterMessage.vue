@@ -1,11 +1,11 @@
 <template>
   <view>
     <textarea class="message_content" v-model="content" :maxlength="200" placeholder="跟树洞倾诉你想对其他人说的东西吧" />
-    <input class="message_author" :maxlength="16" placeholder="告诉我你的名字，昵称也行" />
+    <input class="message_author" :maxlength="16" v-model="author" placeholder="告诉我你的名字，昵称也行" />
     <uni-data-checkbox class="message_tags" mode="tag" multiple v-model="checkedTags" :localdata="tags"></uni-data-checkbox>
     <view class="message_type">
       <label>负能量</label>
-      <switch checked color="#409EFF" style="transform:scale(0.7)"/>
+      <switch checked color="#409EFF" style="transform:scale(0.7)" @change="changeType"/>
       <label>正能量</label>
     </view>
   </view>
@@ -42,17 +42,25 @@
           }
         ],
         checkedTags: [],
-        type: 0
+        type: 1
       }
     },
     computed: {},
     methods: {
-      
+      changeType(e) {
+        this.type = e.detail.value ? 1 : 0
+      },
+      resetMessage() {
+        this.content= ''
+        this.author = ''
+        this.checkedTags = [],
+        this.type = 1
+      }
     },
     watch: {},
   
     // 组件周期函数--监听组件挂载完毕
-  mounted() {},
+    mounted() {},
     // 组件周期函数--监听组件数据更新之前
     beforeUpdate() {},
     // 组件周期函数--监听组件数据更新之后

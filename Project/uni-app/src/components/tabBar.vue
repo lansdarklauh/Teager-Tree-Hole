@@ -12,7 +12,10 @@
 </template>
 
 <script>
-  import tabType from './tabType'
+import tabType from './tabType'
+import { useManagerStore } from '@/store/index'
+const managerStore = useManagerStore()
+
   export default {
     name:"tabBar",
     data() {
@@ -37,8 +40,8 @@
       };
   },
   mounted() {
-    const token = uni.getStorageSync('accessToken')
-    if (token === 'true') {
+    const token = managerStore.getToken()
+    if (token !== '') {
       this.list = tabType.managerTab
     } else {
       this.list = tabType.userTab

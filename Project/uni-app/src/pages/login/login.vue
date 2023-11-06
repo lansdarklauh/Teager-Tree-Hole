@@ -16,7 +16,10 @@
 </template>
 
 <script>
-
+import md5 from 'md5'
+import { login } from '@/api/manager'
+import { useManagerStore } from '@/store/index'
+const managerStore = useManagerStore()
 
 export default {
   components: {
@@ -83,10 +86,29 @@ export default {
   },
   methods: {
     login() {
-      uni.setStorageSync('accessToken', 'true')
-      uni.switchTab({
-        url:'/pages/check/index',
-      })
+      this.$refs.form.validate().then(res=>{
+        const obj = {
+          name: this.formData.account,
+          password:md5(this.formData.password)
+        }
+        return login(obj)
+      }).then((res) => {
+        if (res.data.data) {
+          managerStore.setToken(res.data.data)
+          uni.setStorageSync('accessToken', res.data.data)
+          uni.switchTab({
+            url:'/pages/check/index'
+          })
+        } else {
+          return Promise.reject(res.data.msg)
+        }
+      }).catch(err =>{
+				uni.showToast({
+        	title: err,
+        	icon: 'error',
+        	duration: 2000
+        })
+			})
     }
   },
 }
